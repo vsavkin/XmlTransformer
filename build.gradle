@@ -1,0 +1,15 @@
+apply plugin: 'groovy'
+apply plugin: 'idea'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	groovy group: 'org.codehaus.groovy', name: 'groovy', version: '1.7.5'
+	
+	testCompile group: 'org.spockframework', name: 'spock-core', version: '0.5-groovy-1.7'
+	testCompile group: 'cglib', name: 'cglib', version: '2.2'
+	testCompile group: 'org.objenesis', name: 'objenesis', version: '1.2'
+}
+

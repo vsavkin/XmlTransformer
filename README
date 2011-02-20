@@ -1,0 +1,92 @@
+This is a small library for processing XML.
+
+The library consists of two classes: XmlTransformer, XmlTransformerFactory.
+XmlTransformer invokes a passed callback for each node of a tree. In this callback you can remove some nodes from the tree
+or change their values:
+
+		def t = new XmlTransformer({
+			if(it.name() == 'child') it.value = 'value2'
+		})
+
+		def root = new XmlParser(false, false).parseText('''
+			<root xmlns='http://myurl'>
+				<child>value1</child>
+			</root>
+		''')
+
+		//before: root.child.text() == 'value1'
+		t.process root
+		//after: root.child.text() == 'value2'
+
+XmlTransformerFactory contains a few helper methods for creating XmlTransformers.
+
+To get more information about all the details take a look at Spock specifications for these classes.
+
+But the most exciting part of the library is a Groovy DSL on top of XmlTransformer. Using this DSL you can easily configure
+XmlTransformers. Just a few examples:
+
+		def root = new XmlParser(false, false).parseText('''
+			<root>
+				<child1>value1</child1>
+				<child2 attr="1">value2</child2>
+				<child2 attr="2">value3</child2>
+			</root>
+		''')
+
+		def t = XmlTransformerBuilder.transformations {
+			when {child2 attr: '1'}
+			then {
+				it.value = 'Updated value2'
+			}
+		}
+
+		t.last.process root
+
+This example will update the value of this node: <child2 attr="1">.
+
+		def t = XmlTransformerBuilder.transformations {
+			forEach {
+				println it.text()
+			}
+
+			when {child1}
+			updateChild1 = then {
+				it.value = 'Updated value1'
+			}
+
+			when {child2 attr: '1'}
+			updateChild2 = then {
+				it.value = 'Updated value2'
+			}
+
+			removeChild2 = remove {
+				child2 attr: '2'
+			}
+		}
+
+This chuck of code defines three transformers:
+
+	* t.updateChild1.process root //updates <child1>
+	* t.updateChild2.process root //updates <child2 attr="1">
+	* t.removeChild2.process root //removes <child2 attr="2">
+
+The result xml after processing will be:
+
+	<root>
+		<child1>Updated value1</child1>
+		<child2 attr="1">Updated value2</child2>
+	</root>
+
+There are some cool features in criteria api:
+
+	when {
+		customTagName
+		customTagName attr1: 'value1', attr2: 'value2'
+		tag('weird:tag').attrs(attr1: 'value1')
+		attrs(attr3: 'value3')
+		customTagName attr4: ['value1', 'value2', 'value3']
+	}
+
+As you can see you can specify just tags, tags with attributes, tags with weird names, just attributes or a list of values
+instead of one value.
+
