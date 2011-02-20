@@ -43,7 +43,7 @@ But the most exciting part of the library is a Groovy DSL on top of XmlTransform
 This example will update the value of this node: <child2 attr="1">.
 
 		def t = XmlTransformerBuilder.transformations {
-			forEach {
+			foreach = forEach {
 				println it.text()
 			}
 
@@ -62,8 +62,9 @@ This example will update the value of this node: <child2 attr="1">.
 			}
 		}
 
-This chuck of code defines three transformers:
+This chuck of code defines four transformers:
 
+	* t.foreach.process root //prints the value of each tag
 	* t.updateChild1.process root //updates <child1>
 	* t.updateChild2.process root //updates <child2 attr="1">
 	* t.removeChild2.process root //removes <child2 attr="2">
