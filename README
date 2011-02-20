@@ -1,8 +1,7 @@
 This is a small library for processing XML.
 
 The library consists of two classes: XmlTransformer, XmlTransformerFactory.
-XmlTransformer invokes a passed callback for each node of a tree. In this callback you can remove some nodes from the tree
-or change their values:
+XmlTransformer invokes a passed callback for each node of a tree. In this callback you can remove some nodes from the tree or change their values:
 
 		def t = new XmlTransformer({
 			if(it.name() == 'child') it.value = 'value2'
@@ -22,8 +21,7 @@ XmlTransformerFactory contains a few helper methods for creating XmlTransformers
 
 To get more information about all the details take a look at Spock specifications for these classes.
 
-But the most exciting part of the library is a Groovy DSL on top of XmlTransformer. Using this DSL you can easily configure
-XmlTransformers. Just a few examples:
+But the most exciting part of the library is a Groovy DSL on top of XmlTransformer. Using this DSL you can easily configure XmlTransformers. Just a few examples:
 
 		def root = new XmlParser(false, false).parseText('''
 			<root>
@@ -87,6 +85,5 @@ There are some cool features in criteria api:
 		customTagName attr4: ['value1', 'value2', 'value3']
 	}
 
-As you can see you can specify just tags, tags with attributes, tags with weird names, just attributes or a list of values
-instead of one value.
+As you can see you can specify just tags, tags with attributes, tags with weird names, just attributes or a list of values instead of one value.
 
