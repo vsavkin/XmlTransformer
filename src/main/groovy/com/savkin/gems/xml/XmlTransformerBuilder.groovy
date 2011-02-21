@@ -24,6 +24,7 @@ class XmlTransformerBuilder {
 		println 'when!'
 		def builder = new XmlTransformerConditionBuilder()
 		dsl.delegate = builder
+		dsl.resolveStrategy = Closure.DELEGATE_FIRST
 		dsl()
 		lastCondition = builder.create()
 	}
@@ -34,11 +35,8 @@ class XmlTransformerBuilder {
 	}
 
 	def propertyMissing(String name, XmlTransformer value) {
-		if(value){
-			parsedTransformers[name] = value
-		} else {
-			throw new MissingPropertyException(name, getClass())
-		}
+		assert value, 'Passed XmlTransformer is null'
+		parsedTransformers[name] = value
 	}
 
 	static Map<String, XmlTransformer> transformations(Closure dsl){
