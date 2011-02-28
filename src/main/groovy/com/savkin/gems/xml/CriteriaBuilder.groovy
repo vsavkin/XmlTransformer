@@ -1,6 +1,6 @@
 package com.savkin.gems.xml
 
-class XmlTransformerConditionBuilder {
+class CriteriaBuilder {
 
 	private conditions = []
 
@@ -22,6 +22,10 @@ class XmlTransformerConditionBuilder {
 		new TagBuilder(condition: c)
 	}
 
+	void custom(Closure c){
+		conditions << [closure: c]
+	}
+
 	def methodMissing(String name, args) {
 		if (args.size() == 1 && args[0] instanceof Map) {
 			conditions << [tag: name, attributes: args[0]]
@@ -35,6 +39,10 @@ class XmlTransformerConditionBuilder {
 	}
 
 	private match(condition, node) {
+		if(condition.closure){
+			return condition.closure(node)
+		}
+
 		if (condition.tag && condition.tag != node.name()) {
 			return false
 		}

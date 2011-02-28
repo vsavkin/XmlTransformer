@@ -12,7 +12,7 @@ class XmlTransformerBuilder {
 	}
 
 	XmlTransformer remove(Closure dsl) {
-		def builder = new XmlTransformerConditionBuilder()
+		def builder = new CriteriaBuilder()
 		dsl.delegate = builder
 		dsl()
 
@@ -22,7 +22,7 @@ class XmlTransformerBuilder {
 
 	void when(Closure dsl){
 		println 'when!'
-		def builder = new XmlTransformerConditionBuilder()
+		def builder = new CriteriaBuilder()
 		dsl.delegate = builder
 		dsl.resolveStrategy = Closure.DELEGATE_FIRST
 		dsl()
