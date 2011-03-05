@@ -1,6 +1,10 @@
 apply plugin: 'groovy'
 apply plugin: 'idea'
 
+group = 'com.victorsavkin.grapes'
+version = '1.0'
+
+
 repositories {
 	mavenCentral()
 }
@@ -13,3 +17,82 @@ dependencies {
 	testCompile group: 'org.objenesis', name: 'objenesis', version: '1.2'
 }
 
+
+//Uploading to Sonatype.
+//Dont't need for building the library
+apply plugin: de.huxhorn.gradle.pgp.PgpPlugin
+apply plugin: 'maven'
+
+buildscript {
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath 'de.huxhorn.gradle:de.huxhorn.gradle.pgp-plugin:0.0.3'
+	}
+}
+
+pgp {
+	secretKeyRingFile = new File("${System.properties['user.home']}/.gnupg/secring.gpg")
+	keyId = pgpKeyId
+	password = pgpPassword
+}
+
+task sourcesJar(type: Jar, dependsOn:classes) {
+     classifier = 'sources'
+     from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn:javadoc) {
+     classifier = 'javadoc'
+     from javadoc.destinationDir
+}
+
+artifacts {
+     archives sourcesJar
+     archives javadocJar
+}
+
+uploadArchives {
+	repositories.mavenDeployer {
+		configuration = configurations.archives
+
+		repository(url: "http://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+			authentication(userName: ossUserName, password: ossPassword)
+		}
+
+		pom.project {
+			name 'XmlTransformer'
+			packaging 'jar'
+			description 'Groovy DSL for processing XML.'
+			url 'http://github.com/avix1000/XmlTransformer'
+			inceptionYear '2011'
+
+			scm {
+				url 'scm:git:file:///Users/savkin/projects/java/XmlTransformer'
+				connection 'scm:git:file:///Users/savkin/projects/java/XmlTransformer'
+			}
+
+			licenses {
+				license {
+					name 'Apache2 License'
+					comments ''
+					distribution 'repo'
+				}
+			}
+
+			developers {
+				developer {
+					id 'vsavkin'
+					name 'Victor Savkin'
+					email 'avix1000@gmail.com.com'
+					url 'http://victorsavkin.com'
+					roles {
+						role 'Developer'
+					}
+					timezone '-5'
+				}
+			}
+		}
+	}
+}

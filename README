@@ -107,3 +107,18 @@ This piece of code demonstrates how easy it is to specify complex criterias:
 The library is extremely simple and small but I found it useful in many scenarios.
 
 http://victorsavkin.com/post/3660212172/xmltransformer-groovy-dsl-for-processing-xml
+
+Maven:
+
+    Repository: http://oss.sonatype.org/content/repositories/releases/
+
+    <dependency>
+      <groupId>com.victorsavkin.grapes</groupId>
+      <artifactId>XmlTransformer</artifactId>
+      <version>1.0</version>
+    </dependency>
+
+Gradle:
+
+    Repository: http://oss.sonatype.org/content/repositories/releases/
+    'com.victorsavkin.grapes:XmlTransformer:1.0'
