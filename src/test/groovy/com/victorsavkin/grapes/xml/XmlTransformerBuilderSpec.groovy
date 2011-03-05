@@ -1,4 +1,4 @@
-package com.savkin.gems.xml
+package com.victorsavkin.grapes.xml
 
 import spock.lang.Specification
 
