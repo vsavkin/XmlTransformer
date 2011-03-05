@@ -1,27 +1,33 @@
-This is a small library for processing XML.
+It happens so often when you need an utility class. You create it and than you add one more to implement that "nice feature" and than more and more till you realize one day that you have a small library inside your big project.
 
-The library consists of two classes: XmlTransformer, XmlTransformerFactory.
-XmlTransformer invokes a passed callback for each node of a tree. In this callback you can remove some nodes from the tree or change their values:
+I began with writing a small class helping me process my xml configuration files. It worked well and I added a few features to make it pre-process other XML documents as well. In my view, the result is a very simple but useful library (mostly a DSL) for processing XML. I called it XmlTransformer.
 
+As the library is basically a domain specific language it has a semantic model underneath.  XmlTransformer is the main class in the semantic model. It invokes a passed callback for each node of a tree. You can remove some nodes from the tree or change their values using that callback. This chunk of code illustrates it:
+
+		setup:
 		def t = new XmlTransformer({
 			if(it.name() == 'child') it.value = 'value2'
 		})
 
+		when:
 		def root = new XmlParser(false, false).parseText('''
 			<root xmlns='http://myurl'>
 				<child>value1</child>
 			</root>
 		''')
 
-		//before: root.child.text() == 'value1'
+		then:
+		root.child.text() == 'value1'
+
+		when:
 		t.process root
-		//after: root.child.text() == 'value2'
 
-XmlTransformerFactory contains a few helper methods for creating XmlTransformers.
+		then:
+		root.child.text() == 'value2'
 
-To get more information about all the details take a look at Spock specifications for these classes.
+One more class in the semantic model is XmlTransformerFactory containing a bunch of methods that can be used to create transformers. It just removes some boilerplate code from your callbacks. If you would like to know more about these classes just take a look at their Spock specifications.
 
-But the most exciting part of the library is a Groovy DSL on top of XmlTransformer. Using this DSL you can easily configure XmlTransformers. Just a few examples:
+But the interesting part of the library is a Groovy DSL on top of XmlTransformer. Using this DSL you can easily configure a bunch of transformers.
 
 		def root = new XmlParser(false, false).parseText('''
 			<root>
@@ -40,9 +46,11 @@ But the most exciting part of the library is a Groovy DSL on top of XmlTransform
 
 		t.last.process root
 
-This example will update the value of this node: <child2 attr="1">.
+This transformer will update the value of this node: <child2 attr="1">. The variable `t` contains a map of transformers. You don’t specify any names here, so the only entry in this dictionary we have is `t.last`.
 
-		def t = XmlTransformerBuilder.transformations {
+The second example is more interesting:
+
+		def t = transformations {
 			foreach = forEach {
 				println it.text()
 			}
@@ -69,22 +77,33 @@ This chuck of code defines four transformers:
 	* t.updateChild2.process root //updates <child2 attr="1">
 	* t.removeChild2.process root //removes <child2 attr="2">
 
-The result xml after processing will be:
+The result xml after processing will look like this:
 
 	<root>
 		<child1>Updated value1</child1>
 		<child2 attr="1">Updated value2</child2>
 	</root>
 
-There are some cool features in criteria api:
+
+The last example shows that you can create three types of transformers: a forEach transformer, an update transformer (using `then` statement) and a remove transformer.
+
+The DSL comprises four statements: forEach, then, when and remove.
+
+* forEach and then statements take a closure define actions. Transformers will pass a node as the first parameter of that closure.
+
+* when and remove take a closure define a criteria. The criteria DSL is robust and allows you specify just tags, tags with attributes, tags containing special characters,  just attributes, a list of values for an attribute, or a custom criteria.
+
+This piece of code demonstrates how easy it is to specify complex criterias:
 
 	when {
-		customTagName
-		customTagName attr1: 'value1', attr2: 'value2'
-		tag('weird:tag').attrs(attr1: 'value1')
-		attrs(attr3: 'value3')
-		customTagName attr4: ['value1', 'value2', 'value3']
+		customTagName //true for <customTagName anyattr='vanyvalue'>
+		customTagName attr1: 'value1', attr2: 'value2' //true for <customTagName attr1='value1' attr2='value2'>
+		tag('weird:tag').attrs(attr1: 'value1') //true for <weird:tag attr1='value1'>
+		attrs(attr3: 'value3') //true for any tag with attr3='value3'
+		customTagName attr4: ['value1', 'value2', 'value3'] //true for <customTagName attr4='value1'> or <customTagName attr4='value2'> or ...
+		custom {it.text() == 'value1'} //true for anytag with text() == 'value1'
 	}
 
-As you can see you can specify just tags, tags with attributes, tags with weird names, just attributes or a list of values instead of one value.
+The library is extremely simple and small but I found it useful in many scenarios.
 
+[XmlTransformer: Groovy DSL for Processing XML](http://victorsavkin.com/post/3660212172/xmltransformer-groovy-dsl-for-processing-xml)
