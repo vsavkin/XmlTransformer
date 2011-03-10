@@ -21,7 +21,6 @@ class XmlTransformerBuilder {
 	}
 
 	void when(Closure dsl){
-		println 'when!'
 		def builder = new CriteriaBuilder()
 		dsl.delegate = builder
 		dsl.resolveStrategy = Closure.DELEGATE_FIRST
@@ -42,6 +41,7 @@ class XmlTransformerBuilder {
 	static Map<String, XmlTransformer> transformations(Closure dsl){
 		def builder = new XmlTransformerBuilder()
 		dsl.delegate = builder
+		dsl.resolveStrategy = Closure.DELEGATE_FIRST
 		dsl()
 		builder.parsedTransformers + [last: builder.lastTransformer]
 	}
