@@ -2,7 +2,7 @@ apply plugin: 'groovy'
 apply plugin: 'idea'
 
 group = 'com.victorsavkin.grapes'
-version = '1.0'
+version = '1.0.2'
 
 
 repositories {
@@ -39,18 +39,18 @@ pgp {
 }
 
 task sourcesJar(type: Jar, dependsOn:classes) {
-     classifier = 'sources'
-     from sourceSets.main.allSource
+	 classifier = 'sources'
+	 from sourceSets.main.allSource
 }
 
 task javadocJar(type: Jar, dependsOn:javadoc) {
-     classifier = 'javadoc'
-     from javadoc.destinationDir
+	 classifier = 'javadoc'
+	 from javadoc.destinationDir
 }
 
 artifacts {
-     archives sourcesJar
-     archives javadocJar
+	 archives sourcesJar
+	 archives javadocJar
 }
 
 uploadArchives {
@@ -66,7 +66,6 @@ uploadArchives {
 			packaging 'jar'
 			description 'Groovy DSL for processing XML.'
 			url 'http://github.com/avix1000/XmlTransformer'
-			inceptionYear '2011'
 
 			scm {
 				url 'scm:git:file:///Users/savkin/projects/java/XmlTransformer'
@@ -76,23 +75,20 @@ uploadArchives {
 			licenses {
 				license {
 					name 'Apache2 License'
-					comments ''
 					distribution 'repo'
 				}
 			}
 
 			developers {
 				developer {
-					id 'vsavkin'
+					id 'Victor Savkin'
 					name 'Victor Savkin'
-					email 'avix1000@gmail.com.com'
+					email 'avix1000@gmail.com'
 					url 'http://victorsavkin.com'
-					roles {
-						role 'Developer'
-					}
-					timezone '-5'
 				}
 			}
 		}
 	}
 }
+
+
