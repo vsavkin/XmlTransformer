@@ -106,7 +106,7 @@ class CriteriaBuilderSpec extends Specification {
 		criteria(name: {'tag'}, '@id': 1) == true
 	}
 
-	def 'should throws an exception if tag was specified twice'(){
+	def 'should throw an exception if tag was specified twice'(){
 		when:
 		buildCriteria {
 			tag('tag1').tag('tag2')
@@ -116,7 +116,7 @@ class CriteriaBuilderSpec extends Specification {
 		thrown(AssertionError)
 	}
 
-	def 'should throws an exception if attrs are specified twice'(){
+	def 'should throw an exception if attrs are specified twice'(){
 		when:
 		buildCriteria {
 			attrs(key1: 'value1').attrs(key2: 'value2')
