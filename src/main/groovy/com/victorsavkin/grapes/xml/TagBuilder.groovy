@@ -10,7 +10,7 @@ class TagBuilder {
 	}
 
 	TagBuilder tag(String name){
-		assert condition.attributes == null, 'Tag is already specified'
+		assert condition.tag == null, 'Tag is already specified'
 		condition.tag = name
 		this
 	}
